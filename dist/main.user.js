@@ -4,11 +4,12 @@
 // @name:ja         YouTubeで動画をズーム
 // @description     YouTube video zoom feature
 // @description:ja  YouTubeの動画プレイヤーにズーム機能を追加します
-// @version         2.0.0
+// @version         2.0.1
 // @include         /https?:\/\/www\.youtube\.com.*/
 // @author          sititou70
 // @namespace       https://github.com/sititou70/
 // @run-at          document-idle
+// @license         MIT; https://opensource.org/licenses/MIT
 // ==/UserScript==
 (function () {
     // consts
@@ -33,17 +34,18 @@
         var player_aspect_ratio = video_container_rect.width / video_container_rect.height;
         var selected_aspect_ratio = rect.width / rect.height;
         var fit_width = player_aspect_ratio < selected_aspect_ratio; // or height?
-        var scale = fit_width
-            ? video_container_rect.width / rect.width
-            : video_container_rect.height / rect.height;
+        var scale = fit_width ? video_container_rect.width / rect.width :
+            video_container_rect.height / rect.height;
         var centering_offset = {
             x: fit_width ? 0 : (video_container_rect.width / scale - rect.width) / 2,
-            y: fit_width
-                ? (video_container_rect.height / scale - rect.height) / 2
-                : 0,
+            y: fit_width ? (video_container_rect.height / scale - rect.height) / 2 :
+                0,
         };
-        video.style.transform = "scale(" + scale + ") translateX(" + (-rect.top_left.x + centering_offset.x) + "px) translateY(" + (-rect.top_left.y + centering_offset.y) + "px)";
-        video.style.transformOrigin = 'top left';
+        video.style.transform = "translateX(" + ((video_container_rect.width / 2) -
+            (rect.top_left.x + rect.width / 2)) *
+            scale + "px) translateY(" + ((video_container_rect.height / 2) -
+            (rect.top_left.y + rect.height / 2)) *
+            scale + "px) scale(" + scale + ")";
         video.style.transition = 'all 0.3s ease';
     };
     var drag_start_position;
