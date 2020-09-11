@@ -4,7 +4,7 @@
 // @name:ja         YouTubeで動画をズーム
 // @description     YouTube video zoom feature
 // @description:ja  YouTubeの動画プレイヤーにズーム機能を追加します
-// @version         2.0.1
+// @version         2.0.2
 // @include         /https?:\/\/www\.youtube\.com.*/
 // @author          sititou70
 // @namespace       https://github.com/sititou70/
@@ -36,11 +36,6 @@
         var fit_width = player_aspect_ratio < selected_aspect_ratio; // or height?
         var scale = fit_width ? video_container_rect.width / rect.width :
             video_container_rect.height / rect.height;
-        var centering_offset = {
-            x: fit_width ? 0 : (video_container_rect.width / scale - rect.width) / 2,
-            y: fit_width ? (video_container_rect.height / scale - rect.height) / 2 :
-                0,
-        };
         video.style.transform = "translateX(" + ((video_container_rect.width / 2) -
             (rect.top_left.x + rect.width / 2)) *
             scale + "px) translateY(" + ((video_container_rect.height / 2) -
