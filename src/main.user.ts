@@ -3,7 +3,7 @@
 // @name:ja         YouTubeで動画をズーム
 // @description     YouTube video zoom feature
 // @description:ja  YouTubeの動画プレイヤーにズーム機能を追加します
-// @version         2.0.2
+// @version         2.0.3
 // @include         /https?:\/\/www\.youtube\.com.*/
 // @author          sititou70
 // @namespace       https://github.com/sititou70/
@@ -38,28 +38,26 @@
   };
 
   const zoomVideoToRect = (video: HTMLVideoElement, rect: Rect): void => {
-    const video_container = document.querySelector(
-      VIDEO_CONTAINER_SELECTOR
-    ) as HTMLDivElement | null;
-    if (video_container === null) return;
+    const video_scale = getScaleFromVideo(video);
+    const video_client_rect = video.getBoundingClientRect();
+    const video_rect: Pick<Rect, 'width' | 'height'> = {
+      width: video_client_rect.width / video_scale,
+      height: video_client_rect.height / video_scale,
+    };
 
-    const video_container_rect = video_container.getBoundingClientRect();
-    const player_aspect_ratio =
-      video_container_rect.width / video_container_rect.height;
+    const player_aspect_ratio = video_rect.width / video_rect.height;
     const selected_aspect_ratio = rect.width / rect.height;
 
     const fit_width = player_aspect_ratio < selected_aspect_ratio; // or height?
 
     const scale = fit_width
-      ? video_container_rect.width / rect.width
-      : video_container_rect.height / rect.height;
+      ? video_rect.width / rect.width
+      : video_rect.height / rect.height;
 
     video.style.transform = `translateX(${
-      (video_container_rect.width / 2 - (rect.top_left.x + rect.width / 2)) *
-      scale
+      (video_rect.width / 2 - (rect.top_left.x + rect.width / 2)) * scale
     }px) translateY(${
-      (video_container_rect.height / 2 - (rect.top_left.y + rect.height / 2)) *
-      scale
+      (video_rect.height / 2 - (rect.top_left.y + rect.height / 2)) * scale
     }px) scale(${scale})`;
     video.style.transition = 'all 0.3s ease';
   };

@@ -4,7 +4,7 @@
 // @name:ja         YouTubeで動画をズーム
 // @description     YouTube video zoom feature
 // @description:ja  YouTubeの動画プレイヤーにズーム機能を追加します
-// @version         2.0.2
+// @version         2.0.3
 // @include         /https?:\/\/www\.youtube\.com.*/
 // @author          sititou70
 // @namespace       https://github.com/sititou70/
@@ -27,20 +27,19 @@
         return scale;
     };
     var zoomVideoToRect = function (video, rect) {
-        var video_container = document.querySelector(VIDEO_CONTAINER_SELECTOR);
-        if (video_container === null)
-            return;
-        var video_container_rect = video_container.getBoundingClientRect();
-        var player_aspect_ratio = video_container_rect.width / video_container_rect.height;
+        var video_scale = getScaleFromVideo(video);
+        var video_client_rect = video.getBoundingClientRect();
+        var video_rect = {
+            width: video_client_rect.width / video_scale,
+            height: video_client_rect.height / video_scale,
+        };
+        var player_aspect_ratio = video_rect.width / video_rect.height;
         var selected_aspect_ratio = rect.width / rect.height;
         var fit_width = player_aspect_ratio < selected_aspect_ratio; // or height?
-        var scale = fit_width ? video_container_rect.width / rect.width :
-            video_container_rect.height / rect.height;
-        video.style.transform = "translateX(" + ((video_container_rect.width / 2) -
-            (rect.top_left.x + rect.width / 2)) *
-            scale + "px) translateY(" + ((video_container_rect.height / 2) -
-            (rect.top_left.y + rect.height / 2)) *
-            scale + "px) scale(" + scale + ")";
+        var scale = fit_width
+            ? video_rect.width / rect.width
+            : video_rect.height / rect.height;
+        video.style.transform = "translateX(" + (video_rect.width / 2 - (rect.top_left.x + rect.width / 2)) * scale + "px) translateY(" + (video_rect.height / 2 - (rect.top_left.y + rect.height / 2)) * scale + "px) scale(" + scale + ")";
         video.style.transition = 'all 0.3s ease';
     };
     var drag_start_position;
